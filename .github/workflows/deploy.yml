@@ -12,7 +12,7 @@ env:
   # 这里只需写：命名空间/仓库名
   ALIYUN_REPO: zentrix-repo/java-pack-test
   IMAGE_NAME: zentrix566/java-pack-test
-  
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -73,8 +73,8 @@ jobs:
           script: |
             # 1. 更新 Kubernetes Deployment 的镜像地址为阿里云地址
             # 这样 k3s 就会去阿里云内网拉取，速度飞快
-            kubectl set image deployment/java-pack-test java-app=${{ env.ALIYUN_REGISTRY }}/${{ env.ALIYUN_REPO }}:latest
-            
+#            kubectl set image deployment/java-pack-test java-app=${{ env.ALIYUN_REGISTRY }}/${{ env.ALIYUN_REPO }}:latest
+            kubectl set image deployment/java-pack-test java-app=crpi-nfo20s3jyve6dt2s.cn-beijing.personal.cr.aliyuncs.com/zentrix-repo/java-pack-test:latest
             # 2. 强制重启并检查状态
             kubectl rollout restart deployment java-pack-test
             kubectl rollout status deployment java-pack-test --timeout=180s

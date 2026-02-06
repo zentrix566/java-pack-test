@@ -15,7 +15,8 @@ spec:
       # 如果你的镜像拉取很慢，可以尝试提前手动：k3s ctr images pull ghcr.io/zentrix566/java-pack-test:latest
       containers:
         - name: java-app
-          image: ghcr.io/zentrix566/java-pack-test:latest
+#          image: ghcr.io/zentrix566/java-pack-test:latest
+          image: crpi-nfo20s3jyve6dt2s.cn-beijing.personal.cr.aliyuncs.com/zentrix-repo/java-pack-test:latest
           imagePullPolicy: IfNotPresent  # 如果本地有镜像就不去外网拉取，提速关键
           ports:
             - containerPort: 8080
