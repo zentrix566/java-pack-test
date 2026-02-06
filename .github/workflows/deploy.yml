@@ -72,8 +72,7 @@ jobs:
             FULL_IMAGE_URL="${ALIYUN_REGISTRY}/${ALIYUN_REPO}:latest"
             echo "Deploying image: $FULL_IMAGE_URL"
 
-            # 2. 更新镜像 (请确认你的 container 名字确实是 java-app)
-            # 如果不确定名字，可以用 kubectl get deploy java-pack-test -o jsonpath='{.spec.template.spec.containers[0].name}' 查看
+            # 2. 更新镜像
             kubectl set image deployment/java-pack-test java-app=$FULL_IMAGE_URL
             
             # 3. 强制重启（确保触发拉取最新的 latest）
