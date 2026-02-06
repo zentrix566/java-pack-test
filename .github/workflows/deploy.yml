@@ -7,11 +7,12 @@ on:
 
 env:
   GHCR_REGISTRY: ghcr.io
-  # 阿里云镜像地址（根据你的区域修改，例如 cn-beijing, cn-hangzhou）
-  ALIYUN_REGISTRY: registry.cn-beijing.aliyuncs.com
+  # 修改为你的新版个人实例域名
+  ALIYUN_REGISTRY: crpi-nfo20s3jyve6dt2s.cn-beijing.personal.cr.aliyuncs.com
+  # 这里只需写：命名空间/仓库名
   ALIYUN_REPO: zentrix-repo/java-pack-test
   IMAGE_NAME: zentrix566/java-pack-test
-
+  
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
