@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: java-pack-test
+  labels:
+    app: java-app
 spec:
   replicas: 1
   selector:
@@ -12,37 +14,36 @@ spec:
       labels:
         app: java-app
     spec:
-      # 如果你的镜像拉取很慢，可以尝试提前手动：k3s ctr images pull ghcr.io/zentrix566/java-pack-test:latest
+      # 1. 核心：必须引用上面创建的 Secret 才能从私有库拉取
+      imagePullSecrets:
+        - name: aliyun-pull-secret
       containers:
         - name: java-app
-#          image: ghcr.io/zentrix566/java-pack-test:latest
+          # 2. 核心：使用阿里云 ACR 个人版完整镜像地址
           image: crpi-nfo20s3jyve6dt2s.cn-beijing.personal.cr.aliyuncs.com/zentrix-repo/java-pack-test:latest
-          imagePullPolicy: IfNotPresent  # 如果本地有镜像就不去外网拉取，提速关键
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
-            # Spring Boot 识别环境变量的规则：全大写，下划线代替点
-            # 这将直接覆盖代码里的 spring.datasource.url
+            # 3. 环境变量注入：Spring Boot 标准格式（直接覆盖 properties）
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:postgresql://172.17.107.89:25542/my_project_db"
-
             - name: SPRING_DATASOURCE_USERNAME
               value: "my_app_user"
-
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: my-db-secret
                   key: password
-
-          # 增加内存限制，防止 Java 把 2G 内存吃光导致宿主机死机
+          # 资源限制：防止 2G 内存被 Java 撑爆
           resources:
             requests:
               memory: "512Mi"
-              cpu: "250m"
+              cpu: "200m"
             limits:
-              memory: "1024Mi"
+              memory: "800Mi"
               cpu: "500m"
+
 ---
 apiVersion: v1
 kind: Service
@@ -54,6 +55,6 @@ spec:
     app: java-app
   ports:
     - protocol: TCP
-      port: 80           # 集群内访问端口（Nginx 转发用这个）
-      targetPort: 8080   # 容器内 Spring Boot 监听端口
-      nodePort: 30080    # 外部直接访问端口
+      port: 80           # 集群内部通信端口 (Nginx 访问这个)
+      targetPort: 8080   # 容器内部端口
+      nodePort: 30080    # 外部公网访问端口
