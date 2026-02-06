@@ -1,4 +1,4 @@
-package com.test;
+package com.fengqiao;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
